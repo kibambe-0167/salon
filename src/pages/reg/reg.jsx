@@ -3,15 +3,29 @@ import { Link, useHistory } from 'react-router-dom';
 import { useState } from 'react';
 import './reg.css';
 
+import {
+  IonInput
+} from "@ionic/react"
+
 
 // firebase funcs
-import { fb_db, checkUname } from '../../firebase/config';
+import { db, checkUname, AddAdmin
+
+} from '../../firebase/config';
 import { collection, addDoc } from 'firebase/firestore';
+
+import {
+  createUserWithEmailAndPassword, getAuth
+} from 'firebase/auth'
+
+
+
+const auth = getAuth();
 
 
 const AdminReg = () => {
-  const [fname, setfname] = useState('');
-  const [uname, setuname] = useState('');
+  const [names, setnames] = useState('');
+  const [email, setemail] = useState('');
   const [pw, setpw] = useState(''); // password
   const [pwc, setpwc] = useState(); // password confirm
   const [isReg, setisReg] = useState();
@@ -21,52 +35,38 @@ const AdminReg = () => {
   const history = useHistory(); // useed to route dymanically.
 
 
-
-
-  const AddAdmin = async() => {
-    try {
-      const docRef = await addDoc( collection(fb_db,"Admins"), {
-        firstname: fname, password: pw, username: uname
-      } );
-
-      if( docRef.id ) {
-        // console.log( docRef );
-        setisReg( true );
-        alert("Successfully Registered " + uname );
-        setuname(""); setfname(""); setpw(""); setpwc("");
-        setTimeout(()=> { history.push("/")}, 3000 )
-      }
-      else{
-        // console.log( docRef );
-        alert("A problem.....");
-        setisReg( false );
-      }
-    }
-    catch( err ) { console.log( "ERROR: ", err )}
-  }
-
+  
   const AddAdminFunc = async () => {
 
-    if( pw === pwc && fname && uname ) {
+    if( pw === pwc && names && email ) {
 
-      // check if username already exist. pass the username to check..
-      checkUname( uname.toLowerCase() ).then(( isUniqueUser ) =>  {
-        // console.log( isUniqueUser )
+      createUserWithEmailAndPassword( auth, email, pw )
+        .then(( user_i ) => {
+          const user = user_i.user
+          if( user.uid ) { 
+            console.log( user.uid );
+            AddAdmin( names, email, pw, user.uid ).then( res => {
+              if( res ) { // console.log( docRef );
+                setisReg( true );
+                alert("Successfully Registered " + names );
+                setemail(""); setnames(""); setpw(""); setpwc("");
+                setTimeout(()=> { history.push("/")}, 3000 )
+              }
+              else{ // console.log( docRef );
+                alert("A problem.....");
+                setisReg( false );
+              }
+            })
+          }
 
-        if( isUniqueUser !== true ) {
-          alert("User Name is Unique");
-          AddAdmin();
-        }
-        else {
-          setisUnameFound( true );
-          alert("User Name Is Already Used...");
-          setpw(""); setpwc(' '); // delete data in pw fields
-          // setresetPw( false )
-        }
-
-      } );
+          else { return false }
+        }).catch( err => {
+          console.error( err.message )
+          console.error( err.code )
+          return false;
+        })
     }
-    // else { alert("Please Check Your Input....")}
+    else { alert("Please Check Your Input....")}
   }
 
 
@@ -74,22 +74,25 @@ const AdminReg = () => {
   return (
     <div id="adminReg" >
       
-      <h1 > Admin Register </h1>
+      <h1 > Register </h1>
 
-      { fname } { uname } { pw } { pwc }
+      {/* { fname } { uname } { pw } { pwc } */}
 
       <div >
-        <input placeholder="Enter Firstname"
-          value = { fname }
-          onChange={e=>setfname( e.target.value ) } />
+        <IonInput
+          className="adminRegInput"
+          placeholder="Names"
+          value = { names }
+          onIonChange={ e => setnames( e.target.value ) } />
       </div>
 
       <div >
-        <input
+        <IonInput
+          className="adminRegInput"
           style={{borderColor: isUnameFound ? "red":"" }}
-          placeholder="Enter username"
-          value={ uname }
-          onChange={ e => setuname( e.target.value ) }/> <br />
+          placeholder="Email"
+          value={ email }
+          onIonChange={ e => setemail( e.target.value ) }/>
         {
           isUnameFound ? (<i className="error" > User Name Exist </i>) : ''
         }
@@ -97,17 +100,19 @@ const AdminReg = () => {
       </div>
 
       <div >
-        <input
+        <IonInput
+          className="adminRegInput"
           value = { pw }
-          onChange={e=> setpw( e.target.value ) }
-          placeholder="Enter Password" />
+          onIonChange={e=> setpw( e.target.value ) }
+          placeholder="Password" />
       </div>
 
       <div >
-        <input
+        <IonInput
+          className="adminRegInput"
           value={ pwc }
-          onChange={e=> { setpwc( e.target.value )  }}
-          placeholder="Confirm" />
+          onIonChange={e=> { setpwc( e.target.value )  }}
+          placeholder="Confirm password" />
 
         <br />
         <i >
@@ -124,11 +129,12 @@ const AdminReg = () => {
         </i>
       </div>
 
-      <div >
+      <div className="regButton" >
         <button
+          className="buttons"
           onClick={ e=> AddAdminFunc() }
           disabled={ pw === pwc ? false : true } >
-          Register Admin
+          Register
         </button>
       </div>
 
@@ -138,7 +144,7 @@ const AdminReg = () => {
           ) : ( <i ></i> ) }
       </div>
 
-      <div >
+      <div className="logLink" >
         Already Have Account ? 
         <Link to="/" > Login </Link>
       </div>

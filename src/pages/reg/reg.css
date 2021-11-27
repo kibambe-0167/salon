@@ -3,9 +3,63 @@ h1, h2, h3 {
 }
 
 #adminReg {
-  text-align: center;
+  /* text-align: center; */
+  background-color: inherit;
+}
+
+#adminReg .adminRegInput {
+  background-color: white;
+  margin: 1em 0em;
+  /* border: .1em solid black; */
+  box-shadow: 0em 0em .1em grey;
 }
 
 .error {
   color: red;
+  /* background-color: yellow; */
+  display: block;
+}
+
+#adminReg .regButton {
+  /* background-color: yellow; */
+   text-align: center;
+}
+
+#adminReg .logLink {
+  /* background-color: yellow; */
+  text-align: center;
+  margin: 2em 0em;
+}
+
+#adminReg .logLink a {
+  color: black;
+  text-decoration: underline;
+  font-weight: bold;
+  margin: 0em .5em;
+}
+
+
+@media screen and ( max-width: 768px ) {
+  #adminReg {
+    /* background-color: red; */
+    background-color: inherit;
+  } 
+}
+
+
+@media screen and ( min-width: 769px ) {
+  #adminReg {
+    /* background-color: yellow; */
+    width: 70%;
+    margin: 0em auto;
+  } 
+}
+
+
+@media screen and ( min-width: 992px ) {
+  #adminReg {
+    background-color: blue;
+    width: 40%;
+    margin: 0em auto;
+  } 
 }
