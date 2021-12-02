@@ -37,14 +37,11 @@ const AdminLogin = () => {
         getAdmin( usr.uid, email, pw ).then(res => {
           Cookies.set("user", JSON.stringify(res) )
           if ( JSON.parse( Cookies.get("user") ) ) {
-            history.push("/adminhome")
+            setIsLoad( false );
+            history.push("/adminhome");
           }
         })
       })
-      setTimeout(() => {
-        setIsLoad( false )
-        console.log( "loading false ")
-      }, 3000);
     }
     else{
       setIsLoad( false )
@@ -58,6 +55,8 @@ const AdminLogin = () => {
       <h1 > Login </h1>
       { isLoad }
 
+
+      <form onSubmit={ e=> e.preventDefault() } >
       <div>
         <div  >
           <IonInput
@@ -76,16 +75,17 @@ const AdminLogin = () => {
         </div>
 
         <div id="loginBtn" >
-          <button onClick={ e => logIn() } className="buttons" > { 'Login' }</button>
+          <button type="submit" onClick={ e => logIn() } className="buttons" > { 'Login' }</button>
         </div>
-
-        <IonLoading
-          isOpen={isLoad}
-          onDidDismiss={e=>setIsLoad(false)}
-          message='Connecting user'
-          duration={ 4000 } />
-
       </div>
+      </form>
+
+
+      <IonLoading
+        isOpen={isLoad}
+        // duration={ 4000 }
+        onDidDismiss={e=>setIsLoad(false)}
+        message='Connecting user' />
 
       <div className="regLink" >
         Don't Have Account ? 

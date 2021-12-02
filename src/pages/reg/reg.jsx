@@ -45,7 +45,7 @@ const AdminReg = () => {
           const user = user_i.user
           if( user.uid ) { 
             console.log( user.uid );
-            AddAdmin( names, email, pw, user.uid ).then( res => {
+            AddAdmin( names, email, user.uid ).then( res => {
               if( res ) { // console.log( docRef );
                 setisReg( true );
                 alert("Successfully Registered " + names );

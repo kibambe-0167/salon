@@ -1,0 +1,20 @@
+
+
+#log_form {
+  /* background-color: yellow; */
+  padding: 0em .5em;
+} 
+
+#log_form .cash {
+  /* background-color: red; */
+  display: flex;
+  justify-content: space-around;
+}
+
+#log_form .label {
+  padding: 0em .5em;
+}
+
+#log_form #cancel_upload {
+  background-color: yellow;
+}

@@ -13,3 +13,11 @@ button:hover {
   font-size: 1.1em;
   font-weight: bold;
 }
+
+
+.ionic_inputs {
+  background-color: white;
+  margin: 1em 0em;
+  /* border: .1em solid black; */
+  box-shadow: 0em 0em .1em grey;
+}
